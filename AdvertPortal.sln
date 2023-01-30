@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvertPortal", "AdvertPortal\AdvertPortal.csproj", "{75988341-A230-4379-9855-49E81FF78AF6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75988341-A230-4379-9855-49E81FF78AF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75988341-A230-4379-9855-49E81FF78AF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75988341-A230-4379-9855-49E81FF78AF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75988341-A230-4379-9855-49E81FF78AF6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EBAACCEB-64EB-4926-BF0E-C8810BA90FC5}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,54 @@
+﻿@using System.Globalization;
+@model IEnumerable<AdvertPortal.Core.Models.Domains.Offer>
+
+@{
+}
+
+<div id="offersTable">
+    <table class="table table-stripped display align-middle table-hover text-center">
+          <thead class="bg-secondary text-light">
+                <tr>
+                    <th scope="col" style="width: 180px">ZDJĘCIE</th>
+                    <th scope="col" style="width: 120px">DATA</th>
+                    <th scope="col" style="width: auto">TYTUŁ</th>
+                    <th scope="col" style="width: 150px">CENA</th>
+                </tr>
+          </thead>
+          <tbody class="justify-content-center">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var offer in Model)
+                    {
+
+                        <tr>
+                            <td>
+                                @if (offer.ImagesCollectionId != 0 || offer.ImagesCollectionId == null)
+                                {
+                                   <img src="offer.ImagesCollection.Path" width="150", height="100" alt="offer photo from db"/>
+                                }      
+                                else
+                                {
+                                   <img src="~/shadow_man-612x612.jpg" width="150", height="100" alt="offer photo"    />
+                                }
+                                </td> 
+                            <td class="text-info"> <em>@offer.Date.ToString()</em> </td>
+                            <td> 
+                                <a href="@Url.Action("OfferDetails", "Offer", 
+                                    new {id = offer.Id, userId = offer.UserId, categoryId = offer.CategoryId})" 
+                                    class="fw-bold text-capitalize">
+                                    @offer.Title
+                                </a>     
+                            </td>
+                                    <td class="text-end"> @offer.Price.ToString("C", CultureInfo.CurrentCulture)</td>
+                        </tr>
+                    }
+                }
+                else
+                { 
+                    <tr>
+                        <td class="text-center" colspan="5">There is no offers !</td>
+                    </tr>
+                }
+          </tbody>
+    </table>
+</div>

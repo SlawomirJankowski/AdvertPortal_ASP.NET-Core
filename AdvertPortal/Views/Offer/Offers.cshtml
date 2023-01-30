@@ -1,0 +1,65 @@
+﻿@model AdvertPortal.Core.ViewModels.OffersViewModel
+@{
+    ViewData["Title"] = "OFFERS";
+}
+
+<div class="text-center">
+    <h2 class="text-warning text-start">OGŁOSZENIA</h2>
+    <p>TO DO</p>
+    <p>CKEDITOR for Description edit</p>
+    <p>Carousel or some image gallery in OfferDetailsPage</p>
+    <p>Image service load, show, store, create thumbinail, ImageRepository</p>
+    <p>...</p>
+    <div class="accordion" id="accordionExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingOne">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+        Filtrowanie wyników
+      </button>
+    </h2>
+    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        
+      <form>
+          <div class="mt-2 d-flex justify-content-between">
+                @Html.TextBoxFor(x => x.FilterOffers.Title, new { @class="form-control", placeholder="Tytuł"})
+
+                @Html.DropDownListFor(x =>x.FilterOffers.CategoryId,
+                new SelectList(Model.Categories, "Id", "Name"), "-- Wybierz kategorię --", new {@class="form-control form-select mx-3"})
+                
+                @Html.DropDownListFor(x => x.FilterOffers.SortingOrderParams, new SelectList(Model.FilterOffers.SortingOrderParams), "--  Sortuj po:  --", new {@class="form-control form-select mx-3"})
+
+          </div>
+
+          <div class="d-flex justify-content-end mt-4">
+              <button id="btn-search" type="submit" class="btn btn-danger">
+                  <i class="fa-solid fa-magnifying-glass me-2"></i>
+                  Szukaj
+              </button>
+          </div>
+      </form>
+
+    </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+@*tabela z zadaniami*@
+<div class="text-center mt-4">
+    @await Html.PartialAsync("_OffersTable.cshtml", Model.Offers)
+</div>
+
+
+
+
+
+
+@section Scripts
+    {
+
+
+
+
+}

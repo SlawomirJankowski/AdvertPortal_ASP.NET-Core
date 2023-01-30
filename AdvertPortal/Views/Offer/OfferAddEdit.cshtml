@@ -1,0 +1,82 @@
+﻿@model AdvertPortal.Core.ViewModels.OfferViewModel
+@{
+    if (Model.Offer.Id != 0)
+    {
+        ViewData["Title"] = $"{Model.Heading}: {Model.Offer.Id}";
+    }
+    else
+    {
+        ViewData["Title"] = $"{Model.Heading}"; //dodawanie nowej oferty
+    }
+}
+
+<div class="text-start">
+    <h2 class="text-warning text-start">OGŁOSZENIE nr: @Model.Offer.Id.ToString()</h2> //use heading here
+<hr />
+
+<div class="row">
+
+        @using (Html.BeginForm("Offer", "Offer", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.HiddenFor(x => x.Offer.Id)
+            @Html.HiddenFor(x => x.Offer.UserId)
+            @Html.HiddenFor(x => x.Offer.Date)
+
+            <div class="row">
+                <p class="alert alert-success">Pola: TYTUŁ, KATEGORIA, CENA oraz DANE SZCZEGÓŁOWE są <strong>wymagane !</strong></p>
+
+                <div class="col col-5">
+                    <div class="form-group mt-2">
+                        @Html.LabelFor(x => x.Offer.Title, new { @class = "control-label col-form-label-lg" })
+                        @Html.TextBoxFor(x => x.Offer.Title, new { @class = "form-control", autocomplete = "off", type = "text" })                       
+                        @Html.ValidationMessageFor(x => x.Offer.Title)
+                    </div>
+
+                    <div class="form-group mt-2">
+                        @Html.LabelFor(x => x.Offer.CategoryId, new { @class = "control-label col-form-label-lg" })
+                        @Html.DropDownListFor(x => x.Offer.Category,
+                            new SelectList(Model.Categories, "Id", "Name"),
+                             "-- Select category --",
+                             new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.Offer.CategoryId)
+                    </div>
+
+                    <div class="form-group mt-2">
+                        @Html.LabelFor(x => x.Offer.Price, new { @class = "control-label col-form-label-lg" })
+                        @Html.TextBoxFor(x => x.Offer.Price,
+                   new { @class = "form-control", autocomplete = "off", type = "number", step="0.01" })
+                        @Html.ValidationMessageFor(x => x.Offer.Price)
+                    </div>
+
+                </div>
+
+                <div class="col col-5 offset-2 mt-2">
+                    @Html.LabelFor(x => x.Offer.ImagesCollectionId, new { @class = "control-label col-form-label-lg" })
+                    @Html.TextBoxFor(x => x.Offer.ImagesCollection,
+                new { @class = "form-control btn-info", type = "file", multiple = "multiple", name = "postedFiles" })
+
+                </div>
+
+            </div>
+            <div class="col col-12">
+
+                <div class="form-group mb-2 mt-4 ">
+                    @Html.LabelFor(x => x.Offer.Description, new { @class = "control-label col-form-label-lg" })
+                    <div class="">
+                        @Html.TextAreaFor(x => x.Offer.Description, new { @class = "form-control", id = "", rows="5" })
+                    </div>
+                </div>
+
+                <div class="text-center mt-5">
+                    <button class="btn btn-info btn-lg " type="submit">
+                        <i class="fa-solid fa-floppy-disk me-2"></i>
+                        ZAPISZ I PUBLIKUJ
+                    </button>
+                </div>
+            </div>
+        }
+</div>
+
+</div>

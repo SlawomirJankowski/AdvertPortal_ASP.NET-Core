@@ -1,0 +1,227 @@
+﻿@using System.Globalization;
+@using System.Security.Claims;
+@model AdvertPortal.Core.ViewModels.OfferDetailsViewModel
+@{
+    ViewData["Title"] = $"Ogłoszenie nr: {Model.Offer.Id}";
+
+}
+
+<div class="text-start d-inline-block justify-content-between" >
+    <h2 class="text-warning text-start">OGŁOSZENIE nr: @Model.Offer.Id.ToString()</h2> 
+    @if (Model.Offer.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+    {
+      <div class="btn-group-horizontal my-3">
+      <button type="button" class="btn btn-success"
+            onclick='window.location.href="@Url.Action("OfferAddEdit", "Offer", new { id = Model.Offer.Id, userId = Model.Offer.UserId})"'>
+              <i class="fa-solid fa-pen-to-square me-2"></i>
+          Edytuj
+      </button>
+      <button type="button" class="btn btn-danger"
+              onclick='window.location.href="@Url.Action("Delete", "Offer", new { id = Model.Offer.Id, userId = Model.Offer.UserId})"'>
+              <i class="fa-solid fa-trash-can me-2"></i>
+          Usuń
+          </button>
+      </div>  
+        }
+    <p>user from offer: @Model.Offer.UserId</p>
+    <p>current user Email: @User.FindFirstValue(ClaimTypes.Email)</p>
+    <p>current logged user: @User.FindFirstValue(ClaimTypes.NameIdentifier)</p>
+
+    </div>
+<hr />
+
+
+<div class="row">
+
+      <div class="col col-6 ">
+
+
+    @*<label class="form-label  text-info mt-4" >Title:</label>*@
+    <h3 class="mt-4 text-danger fw-bold">@Model.Offer.Title</h3> 
+
+    <label class="form-label text-info mt-4 text-" >Data publikacji:</label>
+    <h5>@Model.Offer.Date.ToString("yyyy-MM-dd HH:mm")</h5> 
+
+    <label class="form-label text-info mt-4" >Kategoria:</label>
+    <h5>@Model.Offer.Category.Name</h5> 
+
+    <label class="form-label text-info mt-4" >Cena:</label>
+    <h3>@Model.Offer.Price.ToString("C", CultureInfo.CurrentCulture)</h3>
+    
+
+</div> 
+
+
+<div class="col col-6  mt-4 mb-4">
+@*    <label class="form-label text-info mt-4" >Images:</label>*@
+
+    <div id="carousel" class="carousel slide">
+  <div class="carousel-inner container-fluid">
+    <div class="carousel-item container-fluid active">
+      <img src="~/shadow_man-612x612.jpg" class="d-block w-100" alt=".111..">
+    </div>
+    <div class="carousel-item container-fluid">
+      <img src="~/Projekt_KS.png" class="d-block w-100" alt=".222..">
+    </div>
+    <div class="carousel-item container-fluid">
+      <img src="~/shadow_man-612x612.jpg" class="d-block w-100" alt=".333..">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" ></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" ></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+
+
+
+
+                </div>
+
+</div>
+<!---->
+@*
+<div class="container">
+<h1>Photo/Gallery</h1>
+<hr>
+    <div class="row">
+        <div class="col-lg-4 col-sm-6">
+            <div class="thumbnail img-responsive">
+                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1494719019271-7bfff81660d2?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=74496a215491b1529d6702f146901970&auto=format&fit=crop&w=500&q=60"> </a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-6">
+            <div class="thumbnail img-responsive">
+                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1523357585206-175e971f2ad9?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=4d4e050da1c691f01f0643abe9cd5f94&auto=format&fit=crop&w=500&q=60"></a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-6 ">
+            <div class="thumbnail">
+                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1523359366921-4c14294ff5bd?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6010b5b8bc1f6916d652fb48b9e039a6&auto=format&fit=crop&w=500&q=60"></a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-6">
+            <div class="thumbnail img-responsive">
+                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1523282310917-57c94215f54f?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=9562049492c4c1c28014be6b4d372fa8&auto=format&fit=crop&w=500&q=60"></a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-6">
+            <div class="thumbnail img-responsive">
+                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1523279719030-9806e8392152?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=83ec2854d04d0f08312dec44bf645e2d&auto=format&fit=crop&w=500&q=60"></a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-6">
+            <div class="thumbnail img-responsive">
+                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1523264629844-40dd6bf17c2b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=c7ff0286ae72f4dfed2bfee5fc8a53fe&auto=format&fit=crop&w=500&q=60"></a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-6">
+            <div class="thumbnail img-responsive">
+                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1523133892278-d324fa6b326b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=1ba6e3178a138e7dcbdd241499378449&auto=format&fit=crop&w=500&q=60"></a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-6">
+            <div class="thumbnail img-responsive">
+                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1523326350151-473dc3e5215b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=aa765415933dbcd55bc27e0726bfd1f5&auto=format&fit=crop&w=500&q=60"></a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-6">
+            <div class="thumbnail img-responsive">
+                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1523086686757-5cda47c78492?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=0da31c54dc3e5fd28da519b2cde2c98d&auto=format&fit=crop&w=500&q=60"></a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+*@
+
+<!---->
+
+<div class="row mt-4">
+
+
+ 
+    <div class="card">
+<h5 class="card-header text-info">Dane szczegółowe:</h5>
+  <div class="card-body">
+    <p id="description" class="card-text">@Model.Offer.Description </p>
+  </div>
+
+</div>
+</div>
+
+<hr class="my-5"/>
+
+<div class="row">
+    <div class="col col-md-6 col-sm-12">
+
+<div class="card bg-light mb-3" style="max-width: 20rem;">
+  <h4 class="card-header">Kontakt ze Sprzedającym: [UserName]</h4>
+  <div class="card-body">
+    <h5 class="card-title d-inline-block"><i class="fa-solid fa-envelope fa-xl text-danger"></i></h5>
+    <a href="41546545465465" class="card-link d-inline-block ms-2">[User.Email] </a>
+  </div>
+    <div class="card-body ">
+    <h5 class="card-title d-inline-block"><i class="fa-solid fa-phone fa-xl text-danger"></i></h5>
+    <h6 class="d-inline-block ms-2">[User.PhoneNumber] </h6>
+  </div>
+  <div class="card-footer text-muted ">
+    <a class="card-link link-info" href="@Url.Action("Offers", "Offer", 
+    new {userId = Model.Offer.UserId})"> Wszystkie oferty Sprzedającego </a>
+  </div>
+</div>
+</div>
+
+
+       <div class="col col-md-6 col-sm-12">
+                    <div class="text-center mt-5">
+                        <a class="btn bg-warning btn-warning btn-lg " 
+                        asp-controller="Offer" asp-action="Offers">
+                            <i class="fa-solid fa-arrow-rotate-left me-2"></i>
+                            Cofnij
+                        </a>
+                    </div>
+                </div>
+
+</div>
+
+
+@section Scripts 
+{
+   @* <script type="text/javascript">
+            $('.thumbnail').click(function(){
+        $('.modal-body').empty();
+        $($(this).parents('div').html()).appendTo('.modal-body');
+        $('#modal').modal({show:true});
+    });
+
+    $('#modal').on('show.bs.modal', function () {
+       $('.col-6,.row .thumbnail').addClass('blur');
+    })
+
+    $('#modal').on('hide.bs.modal', function () {
+       $('.col-6,.row .thumbnail').removeClass('blur');
+    })
+           *@
+
+    </script>
+
+
+}

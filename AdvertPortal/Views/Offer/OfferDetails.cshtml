@@ -25,7 +25,8 @@
         }
     <p>user from offer: @Model.Offer.UserId</p>
     <p>current user Email: @User.FindFirstValue(ClaimTypes.Email)</p>
-    <p>current logged user: @User.FindFirstValue(ClaimTypes.NameIdentifier)</p>
+    <p>current logged user from ClaimTypes: @User.FindFirstValue(ClaimTypes.NameIdentifier)</p>
+    <p>current logged user Email from db: @Model.User.NormalizedEmail</p>
 
     </div>
 <hr />
@@ -173,18 +174,19 @@
     <div class="col col-md-6 col-sm-12">
 
 <div class="card bg-light mb-3" style="max-width: 20rem;">
-  <h4 class="card-header">Kontakt ze Sprzedającym: [UserName]</h4>
+  <h4 class="card-header">Kontakt ze Sprzedającym: </h4>
+  <h4 class="card-header text-info text-center fst-italic">@Model.User.UserName</h4>
   <div class="card-body">
     <h5 class="card-title d-inline-block"><i class="fa-solid fa-envelope fa-xl text-danger"></i></h5>
-    <a href="41546545465465" class="card-link d-inline-block ms-2">[User.Email] </a>
+    <a href="mailto:@Model.User.Email" class="card-link d-inline-block ms-2">@Model.User.Email </a>
   </div>
     <div class="card-body ">
     <h5 class="card-title d-inline-block"><i class="fa-solid fa-phone fa-xl text-danger"></i></h5>
-    <h6 class="d-inline-block ms-2">[User.PhoneNumber] </h6>
+    <h6 class="d-inline-block ms-2">@Model.User.PhoneNumber </h6>
   </div>
   <div class="card-footer text-muted ">
     <a class="card-link link-info" href="@Url.Action("Offers", "Offer", 
-    new {userId = Model.Offer.UserId})"> Wszystkie oferty Sprzedającego </a>
+    new {userId = Model.Offer.UserId})"> Więcej ofert Sprzedającego </a>
   </div>
 </div>
 </div>

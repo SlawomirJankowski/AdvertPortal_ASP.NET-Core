@@ -13,10 +13,12 @@ namespace AdvertPortal.Controllers
     public class OfferController : Controller
     {
         private OffersRepository _offersRepository;
+        private UsersRepository _usersRepository;
 
         public OfferController(ApplicationDbContext context)
         {
             _offersRepository = new OffersRepository(context);
+            _usersRepository = new UsersRepository(context);
         }
 
         [AllowAnonymous]
@@ -67,12 +69,13 @@ namespace AdvertPortal.Controllers
 
         //GET View offer PUBLIC
         [AllowAnonymous]
-        public IActionResult OfferDetails(int id, int categoryId)
+        public IActionResult OfferDetails(int id, int categoryId, string userId)
         {
             var vm = new OfferDetailsViewModel
             {
                 Category = _offersRepository.GetCategoryById(categoryId),
                 Offer = _offersRepository.GetOffer(id),
+                User = _usersRepository.GetUserById(userId)
             };            
 
             return View(vm);

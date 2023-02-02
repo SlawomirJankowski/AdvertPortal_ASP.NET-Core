@@ -9,7 +9,7 @@ namespace AdvertPortal.Core.Models.Domains
         {
             Offers = new Collection<Offer>();
         }
-        //how to GET email, username HERE
+
         public ICollection<Offer> Offers { get; set; }
     }
 }

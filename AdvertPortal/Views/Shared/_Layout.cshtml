@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
    
     <script src="~/js/fontawesome/fa-icons-kit.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     @*<link rel="stylesheet" href="~/AdvertPortal.styles.css" asp-append-version="true" />*@
 </head>
 <body>
@@ -52,8 +53,10 @@
             &copy; @DateTime.Now.Year - Advert Portal by  <a class="link-info" href="https://slawomirjankowski.github.io/">SLAJAN</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

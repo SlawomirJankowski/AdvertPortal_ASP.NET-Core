@@ -31,12 +31,12 @@
                                    <img src="~/shadow_man-612x612.jpg" width="150", height="100" alt="offer photo"    />
                                 }
                                 </td> 
-                            <td class="text-info"> <em>@offer.Date.ToString()</em> </td>
+                            <td class="text-info"> <em>@offer.Date.ToString("yyyy-MM-dd HH:mm")</em> </td>
                             <td> 
                                 <a href="@Url.Action("OfferDetails", "Offer", 
                                     new {id = offer.Id, userId = offer.UserId, categoryId = offer.CategoryId})" 
                                     class="fw-bold text-capitalize">
-                                    @offer.Title
+                                    @offer.Title.ToUpper()
                                 </a>     
                             </td>
                                     <td class="text-end"> @offer.Price.ToString("C", CultureInfo.CurrentCulture)</td>
@@ -46,7 +46,7 @@
                 else
                 { 
                     <tr>
-                        <td class="text-center" colspan="5">There is no offers !</td>
+                        <td class="text-center" colspan="5">Brak ogłoszeń do wyświetlenia</td>
                     </tr>
                 }
           </tbody>

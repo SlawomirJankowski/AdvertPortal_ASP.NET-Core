@@ -6,7 +6,7 @@ namespace AdvertPortal.Core.Models.Domains
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Pole TYTUŁ jest wymagane")]
         [MaxLength(100)]
         [Display(Name = "Tytuł:")]
         public string Title { get; set; }
@@ -15,19 +15,19 @@ namespace AdvertPortal.Core.Models.Domains
         [Display(Name = "Data publikacji:")]
         public DateTime Date { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Pole DANE SZCZEGÓŁOWE jest wymagane")]
         [MaxLength(300)]
         [Display(Name = "Dane Szczegółowe:")]
         public string Description { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Pole CENA jest wymagane")]
         [Display(Name = "Cena:")]
-        public double Price { get; set; }
+        [RegularExpression(@"^\$?\d+(\,(\d{2}))?$")]
+        public decimal Price { get; set; }
 
-        
         public int? ImagesCollectionId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Pole KATEGORIA jest wymagane")]
         [Display(Name = "Kategoria:")]
         public int CategoryId { get; set; }
 
@@ -35,7 +35,7 @@ namespace AdvertPortal.Core.Models.Domains
         public string UserId { get; set; }
 
 
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
         public ImagesCollection? ImagesCollection { get; set; }
         public ApplicationUser? User { get; set; }
     }

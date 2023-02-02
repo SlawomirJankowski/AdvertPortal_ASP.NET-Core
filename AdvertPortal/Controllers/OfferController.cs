@@ -2,10 +2,14 @@
 using AdvertPortal.Core.Models.Domains;
 using AdvertPortal.Core.ViewModels;
 using AdvertPortal.Persistence;
+using AdvertPortal.Persistence.Extensions;
 using AdvertPortal.Persistence.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Reflection.Metadata.Ecma335;
+using System.Security.Claims;
 
 namespace AdvertPortal.Controllers
 {
@@ -23,49 +27,18 @@ namespace AdvertPortal.Controllers
 
         [AllowAnonymous]
         //GET All Offers
-        public IActionResult Offers(string userId = "")
+        public IActionResult Offers(string userId)
         {
             var vm = new OffersViewModel
             {
                 Offers = string.IsNullOrEmpty(userId) ? _offersRepository.GetAll() : _offersRepository.GetAllForUser(userId),
                 Categories = _offersRepository.GetCategories(),
-                FilterOffers = new FilterOffers()
+                FilterOffers = new FilterOffers(),
+                UserName = !string.IsNullOrEmpty(userId) ? _usersRepository.GetUserById(userId) : null
             };
 
             return View(vm);
         }
-
-        //GET Edit, Add
-        public IActionResult OfferAddEdit(int id = 0)
-        {
-            var vm = new OfferViewModel
-            {
-                Categories = new List<Category> {
-                    new Category { Id = 1, Name = "Common" },
-                    new Category { Id = 2, Name = "Health" }
-                },
-
-                Heading = id == 0 ? "New offer" : "Edit Offer ",
-
-                Offer = new Offer
-                {
-                    Id = 324345,
-                    Price = 123.45d,
-                    Description = "Opis danego produktu"
-                }
-
-            };
-
-            return View(vm);
-        }
-
-        //POST Edit, Add
-        [HttpPost]
-        public IActionResult OfferAddEdit()
-        {
-            return View();
-        }
-
 
         //GET View offer PUBLIC
         [AllowAnonymous]
@@ -75,11 +48,79 @@ namespace AdvertPortal.Controllers
             {
                 Category = _offersRepository.GetCategoryById(categoryId),
                 Offer = _offersRepository.GetOffer(id),
-                User = _usersRepository.GetUserById(userId)
-            };            
+                User = _usersRepository.GetUserById(userId),
+                LoggedUserId = User.GetLoggedUserId(),
+            };
 
             return View(vm);
         }
+
+        //GET Edit, Add
+        public IActionResult OfferAddEdit(int id = 0)
+        {
+            var userId = User.GetLoggedUserId();
+            var offer = id == 0 ? new Offer { Id = 0, UserId = userId } : _offersRepository.GetOfferForEdit(id, userId);
+
+            var vm = PrepareOfferViewModel(id, offer);
+
+            return View(vm);
+        }
+
+        //POST Edit, Add
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public IActionResult OfferAddEdit(Offer offer)
+        {
+            var userId = User.GetLoggedUserId();
+            offer.UserId = userId;
+
+            if (offer.Id == 0)
+                offer.Date = DateTime.Now;
+
+            if (!ModelState.IsValid)
+            {
+                var vm = PrepareOfferViewModel(offer.Id, offer);
+                return View("OfferAddEdit", vm);
+            }
+
+            if (offer.Id == 0)
+                _offersRepository.Add(offer);
+            else
+                _offersRepository.Update(offer);
+
+            return RedirectToAction("Offers");
+        }
+
+        public OfferViewModel PrepareOfferViewModel(int id, Offer offer)
+        {
+            var vm = new OfferViewModel
+            {
+                Offer = offer,
+                Categories = _offersRepository.GetCategories(),
+                Heading = id == 0 ? "Dodawanie nowego ogłoszenia" : $"Edycja ogłoszenia nr: {offer.Id}"
+            };
+            return vm;
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int id) //Offer offer
+        {
+            try
+            {
+                var userId = User.GetLoggedUserId();
+                _offersRepository.Delete(id, userId);
+            }
+            catch (Exception ex)
+            {
+                //logowanie
+                return Json(new { success = false, message = ex.Message });
+            }
+
+            return Json(new {redirectToUrl = Url.Action("Offers", "Offer"),
+                        message = $"Pomyślnie usunięto ofertę nr {id}"});
+        }
+
+        
 
 
 

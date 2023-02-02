@@ -4,13 +4,18 @@
 }
 
 <div class="text-center">
-    <h2 class="text-warning text-start">OGŁOSZENIA</h2>
+    <h2 class="text-warning text-start">OGŁOSZENIA
+        @if (Model.UserName != null)
+        {
+                <span>&nbsp;od: <span class="text-info fst-italic">@Model.UserName</span> </span>
+        }
+    </h2>
     <p>TO DO</p>
     <p>CKEDITOR for Description edit</p>
     <p>Carousel or some image gallery in OfferDetailsPage</p>
     <p>Image service load, show, store, create thumbinail, ImageRepository</p>
-    <p>.poprawić Routing dla logout z Home/Index na Offers/Offer..</p>
     <p>.paginacja dla wszystkich ogłoszeń..</p>
+    <p>.zapamiętywanie ulubionych ogłoszeń dla każdego użytkownika.</p>
     <div class="accordion" id="accordionExample">
   <div class="accordion-item">
     <h2 class="accordion-header" id="headingOne">

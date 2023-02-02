@@ -39,9 +39,44 @@ namespace AdvertPortal.Persistence.Repositories
             return _context.Categories.Single(x => x.Id == categoryId);
         }
 
+        //For OfferDetails View
         public Offer GetOffer(int id)
         {
             return _context.Offers.Single(x => x.Id == id);
+        }
+
+        //For Edit
+        public Offer GetOfferForEdit(int id, string userId)
+        {
+            return _context.Offers.Single(x => x.Id == id && x.UserId == userId);
+        }
+
+        public void Add(Offer offer)
+        {
+            _context.Add(offer);
+            _context.SaveChanges();
+        }
+
+        public void Delete(int id, string userId)
+        {
+            var offerToDelete = _context.Offers
+                    .Single(x => x.Id == id && x.UserId == userId);
+            _context.Offers.Remove(offerToDelete);
+            _context.SaveChanges();
+        }
+
+        public void Update(Offer offer)
+        {
+            var offerToUpdate = _context.Offers
+                .Single(x => x.Id == offer.Id && x.UserId == offer.UserId);
+
+            offerToUpdate.Title = offer.Title; 
+            offerToUpdate.Description = offer.Description;
+            offerToUpdate.CategoryId = offer.CategoryId;
+            offerToUpdate.Price = offer.Price;
+            // add update for imagesCollection
+
+            _context.SaveChanges();
         }
     }
 }

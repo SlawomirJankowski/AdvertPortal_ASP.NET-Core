@@ -35,6 +35,10 @@ footer {
     
 }
 
+.field-validation-error {
+    color: #ff0000;
+    font-style: italic;
+}
 
 /*
 .container h1 {

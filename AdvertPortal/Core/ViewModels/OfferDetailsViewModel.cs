@@ -7,5 +7,6 @@ namespace AdvertPortal.Core.ViewModels
         public Offer Offer { get; set; }
         public Category Category { get; set; }
         public ApplicationUser User { get; set; }
+        public string LoggedUserId { get; set; }
     }
 }

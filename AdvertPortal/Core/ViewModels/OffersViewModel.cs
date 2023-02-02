@@ -8,5 +8,6 @@ namespace AdvertPortal.Core.ViewModels
         public FilterOffers FilterOffers { get; set; }
         public IEnumerable<Offer> Offers { get; set; }
         public IEnumerable<Category> Categories { get; set; }
+        public ApplicationUser? UserName { get; set; }
     }
 }

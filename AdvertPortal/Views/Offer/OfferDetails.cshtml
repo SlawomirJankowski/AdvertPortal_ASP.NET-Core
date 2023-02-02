@@ -1,32 +1,42 @@
 ﻿@using System.Globalization;
 @using System.Security.Claims;
+@using Microsoft.AspNetCore.Antiforgery;
 @model AdvertPortal.Core.ViewModels.OfferDetailsViewModel
+@inject IAntiforgery antiforgery
+
 @{
     ViewData["Title"] = $"Ogłoszenie nr: {Model.Offer.Id}";
 
 }
 
 <div class="text-start d-inline-block justify-content-between" >
-    <h2 class="text-warning text-start">OGŁOSZENIE nr: @Model.Offer.Id.ToString()</h2> 
-    @if (Model.Offer.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+    <h2 class="text-warning text-start">OGŁOSZENIE nr: <span class="text-primary">@Model.Offer.Id</span></h2> 
+    @if (Model.Offer.UserId == Model.LoggedUserId)
     {
-      <div class="btn-group-horizontal my-3">
-      <button type="button" class="btn btn-success"
-            onclick='window.location.href="@Url.Action("OfferAddEdit", "Offer", new { id = Model.Offer.Id, userId = Model.Offer.UserId})"'>
-              <i class="fa-solid fa-pen-to-square me-2"></i>
-          Edytuj
-      </button>
-      <button type="button" class="btn btn-danger"
-              onclick='window.location.href="@Url.Action("Delete", "Offer", new { id = Model.Offer.Id, userId = Model.Offer.UserId})"'>
-              <i class="fa-solid fa-trash-can me-2"></i>
-          Usuń
-          </button>
-      </div>  
-        }
-    <p>user from offer: @Model.Offer.UserId</p>
-    <p>current user Email: @User.FindFirstValue(ClaimTypes.Email)</p>
+           <div class="btn-group-horizontal my-3">
+                <button type="button" class="btn btn-success"
+                onclick='window.location.href="@Url.Action("OfferAddEdit", "Offer", new { id = Model.Offer.Id })"'>
+                      <i class="fa-solid fa-pen-to-square me-2"></i>
+                  Edytuj
+              </button>
+              <button class="btn btn-danger btn-lg " onclick="deleteOffer(@Model.Offer.Id)">
+                    <i class="fa-solid fa-trash-can me-2"></i>
+                 USUŃ
+              </button>
+
+           </div>  
+  
+    }
+    @*<p>user from offer: @Model.Offer.UserId</p>
+    <p>current user NAME from ClaimTypes: @User.FindFirstValue(ClaimTypes.Name)</p>
+    <p>current user Email from ClaimTypes: @User.FindFirstValue(ClaimTypes.Email)</p>
     <p>current logged user from ClaimTypes: @User.FindFirstValue(ClaimTypes.NameIdentifier)</p>
-    <p>current logged user Email from db: @Model.User.NormalizedEmail</p>
+    <p>--- --- ---</p>
+    <p>offer user Name from db: @Model.User.NormalizedUserName</p>
+    <p>offer user Email from db: @Model.User.NormalizedEmail</p>
+    <p>offer user from db: @Model.User.Id</p>
+*@
+
 
     </div>
 <hr />
@@ -37,8 +47,8 @@
       <div class="col col-6 ">
 
 
-    @*<label class="form-label  text-info mt-4" >Title:</label>*@
-    <h3 class="mt-4 text-danger fw-bold">@Model.Offer.Title</h3> 
+        @*<label class="form-label  text-info mt-4" >Title:</label>*@
+    <h3 class="mt-4 text-danger fw-bold">@Model.Offer.Title.ToUpper()</h3> 
 
     <label class="form-label text-info mt-4 text-" >Data publikacji:</label>
     <h5>@Model.Offer.Date.ToString("yyyy-MM-dd HH:mm")</h5> 
@@ -48,13 +58,13 @@
 
     <label class="form-label text-info mt-4" >Cena:</label>
     <h3>@Model.Offer.Price.ToString("C", CultureInfo.CurrentCulture)</h3>
-    
+
 
 </div> 
 
 
 <div class="col col-6  mt-4 mb-4">
-@*    <label class="form-label text-info mt-4" >Images:</label>*@
+        @*    <label class="form-label text-info mt-4" >Images:</label>*@
 
     <div id="carousel" class="carousel slide">
   <div class="carousel-inner container-fluid">
@@ -158,7 +168,7 @@
 <div class="row mt-4">
 
 
- 
+
     <div class="card">
 <h5 class="card-header text-info">Dane szczegółowe:</h5>
   <div class="card-body">
@@ -184,9 +194,9 @@
     <h5 class="card-title d-inline-block"><i class="fa-solid fa-phone fa-xl text-danger"></i></h5>
     <h6 class="d-inline-block ms-2">@Model.User.PhoneNumber </h6>
   </div>
-  <div class="card-footer text-muted ">
-    <a class="card-link link-info" href="@Url.Action("Offers", "Offer", 
-    new {userId = Model.Offer.UserId})"> Więcej ofert Sprzedającego </a>
+  <div class="card-footer text-center ">
+    <a class="card-link link-primary " href="@Url.Action("Offers", "Offer", 
+    new {userId = Model.Offer.UserId})"> WIĘCEJ OFERT SPRZEDAJĄCEGO </a>
   </div>
 </div>
 </div>
@@ -207,8 +217,37 @@
 
 @section Scripts 
 {
-   @* <script type="text/javascript">
-            $('.thumbnail').click(function(){
+    <script type="text/javascript">
+    
+        function deleteOffer(id) {
+            if (!confirm("Potwierdź usunięcie tego ogłoszenia ?"))
+                return;
+
+            $.ajax({
+                type: 'POST',
+                url: "@Url.Action("Delete", "Offer")",
+                dataType: "json",
+                data: {
+                    id : id
+                },
+                success: function (data) {
+                        window.location = data.redirectToUrl;
+                        alert(data.message);
+    
+                },
+                error: function (data) {
+                    alert(data.Message);
+                }
+                
+            });
+        }
+
+    </script>
+} 
+
+
+
+@*    $('.thumbnail').click(function(){
         $('.modal-body').empty();
         $($(this).parents('div').html()).appendTo('.modal-body');
         $('#modal').modal({show:true});
@@ -222,8 +261,3 @@
        $('.col-6,.row .thumbnail').removeClass('blur');
     })
            *@
-
-    </script>
-
-
-}

@@ -1,5 +1,6 @@
 ﻿using AdvertPortal.Core.Models.Domains;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace AdvertPortal.Persistence.Repositories
@@ -29,8 +30,33 @@ namespace AdvertPortal.Persistence.Repositories
                 .ToList();
             return offers;
         }
+        
+        public IEnumerable<Offer> GetFilteredOffers(int categoryId = 0, string? title = null, ICollection<string>? sortingOrderParams = null)
+        {
+            IQueryable<Offer> offers = _context.Offers.
+                Include(x => x.Category);
 
-        public IEnumerable<Category> GetCategories()
+            if (categoryId != 0)
+                offers = offers.Where(x=> x.CategoryId == categoryId);
+
+            if (!string.IsNullOrWhiteSpace(title))
+                offers = offers.Where(x => x.Title.Contains(title));
+
+            if (sortingOrderParams != null && sortingOrderParams.Any())
+            {
+                if (sortingOrderParams.Contains("Dacie: rosnąco"))
+                        offers = offers.OrderBy(x => x.Date);
+                else if (sortingOrderParams.Contains("Dacie: malejąco"))
+                        offers = offers.OrderByDescending(x => x.Date);
+                else if (sortingOrderParams.Contains("Cenie: rosnąco"))
+                        offers = offers.OrderBy(x => x.Price);
+                else if (sortingOrderParams.Contains("Cenie: malejąco"))
+                        offers = offers.OrderByDescending(x => x.Price);
+            }
+            return offers.ToList();
+        }
+
+public IEnumerable<Category> GetCategories()
         {
             return _context.Categories.ToList();
         }

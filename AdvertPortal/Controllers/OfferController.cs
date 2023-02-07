@@ -5,11 +5,10 @@ using AdvertPortal.Persistence;
 using AdvertPortal.Persistence.Extensions;
 using AdvertPortal.Persistence.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Claims;
+using Ganss.Xss;
+using System.Net.Mail;
+using System.Net;
 
 namespace AdvertPortal.Controllers
 {
@@ -25,7 +24,6 @@ namespace AdvertPortal.Controllers
             _offersRepository = new OffersRepository(context);
             _usersRepository = new UsersRepository(context);
             _observedOffersRepository = new ObservedOffersRepository(context);
-
         }
 
         [AllowAnonymous]
@@ -49,6 +47,16 @@ namespace AdvertPortal.Controllers
             return View(vm);
         }
 
+        //POST filter Offers
+        [HttpPost]
+        public IActionResult Offers(OffersViewModel offersViewModel)
+        {
+            var offers = _offersRepository.GetFilteredOffers(offersViewModel.FilterOffers.CategoryId,
+                offersViewModel.FilterOffers.Title,
+                offersViewModel.FilterOffers.SortingOrderParams);
+
+            return PartialView("_OffersTable", offers);
+        }
 
         //GET View offer PUBLIC
         [AllowAnonymous]
@@ -89,6 +97,9 @@ namespace AdvertPortal.Controllers
             if (offer.Id == 0)
                 offer.Date = DateTime.Now;
 
+            //to prevent XSS attacks
+            offer.Description = HtmlSanitizer(WebUtility.HtmlDecode(offer.Description));
+
             if (!ModelState.IsValid)
             {
                 var vm = PrepareOfferViewModel(offer.Id, offer);
@@ -101,6 +112,13 @@ namespace AdvertPortal.Controllers
                 _offersRepository.Update(offer);
 
             return RedirectToAction("Offers");
+        }
+
+        private string HtmlSanitizer(string dirtyHtml)
+        {
+            var sanitizer = new HtmlSanitizer();
+            var cleanHtml = sanitizer.Sanitize(dirtyHtml);
+            return cleanHtml;
         }
 
         public OfferViewModel PrepareOfferViewModel(int id, Offer offer)

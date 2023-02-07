@@ -7,11 +7,11 @@
     <h2 class="text-warning text-start">OGŁOSZENIA
         @if (Model.UserName != null)
         {
-                <span>&nbsp;od: <span class="text-info fst-italic">@Model.UserName</span> </span>
+            <span>&nbsp;od: <span class="text-info fst-italic">@Model.UserName</span> </span>
         }
     </h2>
     <p>TO DO</p>
-    <p>CKEDITOR for Description edit</p>
+
     <p>Carousel or some image gallery in OfferDetailsPage</p>
     <p>Image service load, show, store, create thumbinail, ImageRepository</p>
     <p>.paginacja dla wszystkich ogłoszeń..</p>
@@ -25,7 +25,7 @@
     <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
       <div class="accordion-body">
         
-      <form>
+      <form id="filterForm">
           <div class="mt-2 d-flex justify-content-between">
                 @Html.TextBoxFor(x => x.FilterOffers.Title, new { @class="form-control", placeholder="Tytuł"})
 
@@ -51,20 +51,36 @@
 </div>
 
 
-@*tabela z zadaniami*@
 <div class="text-center mt-4">
     @await Html.PartialAsync("_OffersTable.cshtml", Model.Offers)
 </div>
 
 
-
-
-
-
 @section Scripts
-    {
+{
+         <script type="text/javascript">
 
+                $(document).ready(function () {
 
+                    $('#filterForm').submit(function () {
 
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("Offers", "Offer")",
+                        data: $(this).serialize(),
+                        success: function (data) {
+                              $('#offersTable').html(data);
+                        },
+                        error: function (data) {
+                            alert(data.message)
+                        },
+                        dataType: "html"
+                    });
+
+                    return false;
+                });
+
+            });
+        </script>
 
 }

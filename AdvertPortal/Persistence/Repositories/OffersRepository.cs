@@ -1,5 +1,6 @@
 ﻿using AdvertPortal.Core.Models.Domains;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace AdvertPortal.Persistence.Repositories
 {
@@ -20,7 +21,7 @@ namespace AdvertPortal.Persistence.Repositories
             return offers;
         }
 
-        public IEnumerable<Offer> GetAllForUser(string userId)
+        public IEnumerable<Offer> GetAllWhereUserIsOwner(string userId)
         {
             var offers = _context.Offers
                 .Include(x => x.Category)
@@ -77,6 +78,17 @@ namespace AdvertPortal.Persistence.Repositories
             // add update for imagesCollection
 
             _context.SaveChanges();
+        }
+
+        public IEnumerable<Offer> GetAllObservedOffers(string loggedUserId)
+        {
+            var observedOffersByLoggedUser = from offers in _context.Offers
+                                             join observedOffer in _context.ObservedOffers
+                                             on offers.Id equals observedOffer.OfferId
+                                             where observedOffer.UserId == loggedUserId
+                                             select offers;
+
+             return observedOffersByLoggedUser;
         }
     }
 }

@@ -40,6 +40,31 @@ footer {
     font-style: italic;
 }
 
+
+/*custom checkboxes*/
+input.chk-toggle {
+    visibility: hidden;
+}
+
+input.chk-toggle:checked:after, input.chk-toggle:after {
+        visibility: visible;
+        font-family: FontAwesome;
+        font-size: 40px;
+        vertical-align: text-bottom;
+    }
+
+    input.chk-toggle:checked:after {
+        content: '\f058';
+        color: #099a26;
+    }
+
+    input.chk-toggle:after {
+        content: '\f057';
+        color: #808080;
+    }
+
+
+
 /*
 .container h1 {
     font-family: 'Raleway';

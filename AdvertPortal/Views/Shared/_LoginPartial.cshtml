@@ -12,7 +12,9 @@
                   <div class="dropdown-menu">
                         <a class="dropdown-item" href="@Url.ActionLink("Offers", "Offer", 
                             new {userId = User.FindFirstValue(ClaimTypes.NameIdentifier)})">Twoje Ogłoszenia</a>
-                                <a class="dropdown-item link-warning" href="@Url.ActionLink("OfferAddEdit", "Offer")" >Dodaj Nowe Ogłoszenie</a>
+                        <a class="dropdown-item link-warning" href="@Url.ActionLink("OfferAddEdit", "Offer")" >Dodaj Nowe Ogłoszenie</a>
+                        <a class="dropdown-item" href="@Url.ActionLink("Offers", "Offer",
+                            new {userId = User.FindFirstValue(ClaimTypes.NameIdentifier), observedOffers = "true"})" >Obserwowane Ogłoszenia</a>
                     <div class="dropdown-divider"></div>
                         <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Zarządzanie Kontem</a>
                   </div>

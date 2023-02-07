@@ -18,20 +18,29 @@ namespace AdvertPortal.Controllers
     {
         private OffersRepository _offersRepository;
         private UsersRepository _usersRepository;
+        private ObservedOffersRepository _observedOffersRepository;
 
         public OfferController(ApplicationDbContext context)
         {
             _offersRepository = new OffersRepository(context);
             _usersRepository = new UsersRepository(context);
+            _observedOffersRepository = new ObservedOffersRepository(context);
+
         }
 
         [AllowAnonymous]
         //GET All Offers
-        public IActionResult Offers(string userId)
+        public IActionResult Offers(string userId, bool observedOffers = false)
         {
+            IEnumerable<Offer> offers;
+            if (observedOffers)
+                offers = _offersRepository.GetAllObservedOffers(userId);
+            else
+                offers = string.IsNullOrEmpty(userId) ? _offersRepository.GetAll() : _offersRepository.GetAllWhereUserIsOwner(userId);
+
             var vm = new OffersViewModel
             {
-                Offers = string.IsNullOrEmpty(userId) ? _offersRepository.GetAll() : _offersRepository.GetAllForUser(userId),
+                Offers = offers,
                 Categories = _offersRepository.GetCategories(),
                 FilterOffers = new FilterOffers(),
                 UserName = !string.IsNullOrEmpty(userId) ? _usersRepository.GetUserById(userId) : null
@@ -44,12 +53,14 @@ namespace AdvertPortal.Controllers
         [AllowAnonymous]
         public IActionResult OfferDetails(int id, int categoryId, string userId)
         {
+            var loggedUserId = User.GetLoggedUserId();
             var vm = new OfferDetailsViewModel
             {
                 Category = _offersRepository.GetCategoryById(categoryId),
                 Offer = _offersRepository.GetOffer(id),
                 User = _usersRepository.GetUserById(userId),
-                LoggedUserId = User.GetLoggedUserId(),
+                LoggedUserId = loggedUserId,
+                IsObserved = _observedOffersRepository.IsObserved(id, loggedUserId)
             };
 
             return View(vm);
@@ -120,9 +131,45 @@ namespace AdvertPortal.Controllers
                         message = $"Pomyślnie usunięto ofertę nr {id}"});
         }
 
-        
+        [HttpPost]
+        public IActionResult AddObservedOffer(int offerId)
+        {
+            try
+            {
+                var userId = User.GetLoggedUserId();
+                _observedOffersRepository.AddObservedStatus(offerId, userId);
+            }
+            catch (Exception ex)
+            {
+                //logowanie
+                return Json(new { message = ex.Message });
+            }
 
+            return Json(new
+            {
+                message = "Dodano do OBSERWOWANYCH"
+            });
+        }
 
+        [HttpPost]
+        public IActionResult RemoveObservedOffer(int offerId)
+        {
+            try
+            {
+                var userId = User.GetLoggedUserId();
+                _observedOffersRepository.RemoveObservedStatus(offerId, userId);
+            }
+            catch (Exception ex)
+            {
+                //logowanie
+                return Json(new { message = ex.Message });
+            }
+
+            return Json(new
+            {
+                message = "Usunięto z OBSERWOWANYCH"
+            });
+        }
 
     }
 }

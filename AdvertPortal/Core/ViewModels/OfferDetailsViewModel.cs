@@ -8,5 +8,6 @@ namespace AdvertPortal.Core.ViewModels
         public Category Category { get; set; }
         public ApplicationUser User { get; set; }
         public string LoggedUserId { get; set; }
+        public bool IsObserved { get; set; }
     }
 }

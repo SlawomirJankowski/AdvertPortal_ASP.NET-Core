@@ -1,32 +1,45 @@
 ﻿@using System.Globalization;
 @using System.Security.Claims;
+@using AdvertPortal.Core.Models.Domains;
 @using Microsoft.AspNetCore.Antiforgery;
+@using Microsoft.AspNetCore.Identity;
 @model AdvertPortal.Core.ViewModels.OfferDetailsViewModel
 @inject IAntiforgery antiforgery
+@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     ViewData["Title"] = $"Ogłoszenie nr: {Model.Offer.Id}";
-
 }
 
-<div class="text-start d-inline-block justify-content-between" >
-    <h2 class="text-warning text-start">OGŁOSZENIE nr: <span class="text-primary">@Model.Offer.Id</span></h2> 
-    @if (Model.Offer.UserId == Model.LoggedUserId)
-    {
-           <div class="btn-group-horizontal my-3">
-                <button type="button" class="btn btn-success"
-                onclick='window.location.href="@Url.Action("OfferAddEdit", "Offer", new { id = Model.Offer.Id })"'>
-                      <i class="fa-solid fa-pen-to-square me-2"></i>
-                  Edytuj
-              </button>
-              <button class="btn btn-danger btn-lg " onclick="deleteOffer(@Model.Offer.Id)">
-                    <i class="fa-solid fa-trash-can me-2"></i>
-                 USUŃ
-              </button>
+<div class="row">
+    <div class="text-start col col-7 justify-content-between">
 
-           </div>  
-  
-    }
+        <h2 class="text-warning ">OGŁOSZENIE nr: <span class="text-primary">@Model.Offer.Id</span></h2>  
+    </div>  
+        @if (Model.Offer.UserId == Model.LoggedUserId)
+        {
+            <div class="col  col-4 offset-1">
+                <div class="btn-group-horizontal ">
+                     <button type="button" class="btn btn-success me-3"
+                      onclick='window.location.href="@Url.Action("OfferAddEdit", "Offer", new { id = Model.Offer.Id })"'>
+                         <i class="fa-solid fa-pen-to-square me-2"></i>
+                          Edytuj
+                     </button>
+                     <button class="btn btn-danger btn-lg " onclick="deleteOffer(@Model.Offer.Id)">
+                          <i class="fa-solid fa-trash-can me-2"></i>
+                         USUŃ
+                     </button>
+                </div>
+            </div>
+        }
+        else if (SignInManager.IsSignedIn(User))
+        {
+            <div class="col col-4 offset-1 ">
+                 <span class="badge rounded-pill bg-light ">Obserwowane:  
+                     <input id="chk-isObserved" type="checkbox" class="chk-toggle" checked="@Model.IsObserved"  onchange="test(@Model.Offer.Id)"></span>
+            </div>
+        }
+</div>
     @*<p>user from offer: @Model.Offer.UserId</p>
     <p>current user NAME from ClaimTypes: @User.FindFirstValue(ClaimTypes.Name)</p>
     <p>current user Email from ClaimTypes: @User.FindFirstValue(ClaimTypes.Email)</p>
@@ -37,63 +50,47 @@
     <p>offer user from db: @Model.User.Id</p>
 *@
 
-
-    </div>
 <hr />
 
-
 <div class="row">
+    <div class="col col-6 ">
+        <h3 class="mt-4 text-danger fw-bold">@Model.Offer.Title.ToUpper()</h3> 
 
-      <div class="col col-6 ">
+        <label class="form-label text-info mt-4 text-" >Data publikacji:</label>
+        <h5>@Model.Offer.Date.ToString("yyyy-MM-dd HH:mm")</h5> 
 
+        <label class="form-label text-info mt-4" >Kategoria:</label>
+        <h5>@Model.Offer.Category.Name</h5> 
 
-        @*<label class="form-label  text-info mt-4" >Title:</label>*@
-    <h3 class="mt-4 text-danger fw-bold">@Model.Offer.Title.ToUpper()</h3> 
+        <label class="form-label text-info mt-4" >Cena:</label>
+        <h3>@Model.Offer.Price.ToString("C", CultureInfo.CurrentCulture)</h3>
+    </div> 
 
-    <label class="form-label text-info mt-4 text-" >Data publikacji:</label>
-    <h5>@Model.Offer.Date.ToString("yyyy-MM-dd HH:mm")</h5> 
-
-    <label class="form-label text-info mt-4" >Kategoria:</label>
-    <h5>@Model.Offer.Category.Name</h5> 
-
-    <label class="form-label text-info mt-4" >Cena:</label>
-    <h3>@Model.Offer.Price.ToString("C", CultureInfo.CurrentCulture)</h3>
-
-
-</div> 
-
-
-<div class="col col-6  mt-4 mb-4">
+    <div class="col col-6  mt-4 mb-4">
         @*    <label class="form-label text-info mt-4" >Images:</label>*@
 
-    <div id="carousel" class="carousel slide">
-  <div class="carousel-inner container-fluid">
-    <div class="carousel-item container-fluid active">
-      <img src="~/shadow_man-612x612.jpg" class="d-block w-100" alt=".111..">
+        <div id="carousel" class="carousel slide">
+              <div class="carousel-inner container-fluid">
+                    <div class="carousel-item container-fluid active">
+                      <img src="~/shadow_man-612x612.jpg" class="d-block w-100" alt=".111..">
+                    </div>
+                    <div class="carousel-item container-fluid">
+                      <img src="~/Projekt_KS.png" class="d-block w-100" alt=".222..">
+                    </div>
+                    <div class="carousel-item container-fluid">
+                      <img src="~/shadow_man-612x612.jpg" class="d-block w-100" alt=".333..">
+                    </div>
+              </div>
+                  <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" ></span>
+                    <span class="visually-hidden">Previous</span>
+                  </button>
+                  <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" ></span>
+                    <span class="visually-hidden">Next</span>
+                  </button>
+        </div>
     </div>
-    <div class="carousel-item container-fluid">
-      <img src="~/Projekt_KS.png" class="d-block w-100" alt=".222..">
-    </div>
-    <div class="carousel-item container-fluid">
-      <img src="~/shadow_man-612x612.jpg" class="d-block w-100" alt=".333..">
-    </div>
-  </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" ></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
-    <span class="carousel-control-next-icon" ></span>
-    <span class="visually-hidden">Next</span>
-  </button>
-</div>
-
-
-
-
-
-                </div>
-
 </div>
 <!---->
 @*
@@ -166,59 +163,51 @@
 <!---->
 
 <div class="row mt-4">
-
-
-
     <div class="card">
-<h5 class="card-header text-info">Dane szczegółowe:</h5>
-  <div class="card-body">
-    <p id="description" class="card-text">@Model.Offer.Description </p>
-  </div>
-
-</div>
+        <h5 class="card-header text-info">Dane szczegółowe:</h5>
+        <div class="card-body">
+            <p id="description" class="card-text">@Model.Offer.Description </p>
+        </div>
+    </div>
 </div>
 
 <hr class="my-5"/>
 
 <div class="row">
     <div class="col col-md-6 col-sm-12">
+        <div id="test" class="card bg-light mb-3" style="max-width: 20rem;">
+            <h4 class="card-header">Kontakt ze Sprzedającym: </h4>
+            <h4 class="card-header text-info text-center fst-italic">@Model.User.UserName</h4>
+            <div class="card-body">
+                <h5 class="card-title d-inline-block"><i class="fa-solid fa-envelope fa-xl text-danger"></i></h5>
+                <a href="mailto:@Model.User.Email" class="card-link d-inline-block ms-2">@Model.User.Email </a>
+            </div>
+            <div class="card-body ">
+                <h5 class="card-title d-inline-block"><i class="fa-solid fa-phone fa-xl text-danger"></i></h5>
+                <h6 class="d-inline-block ms-2">@Model.User.PhoneNumber </h6>
+            </div>
+            <div class="card-footer text-center ">
+            <a class="card-link link-primary " href="@Url.Action("Offers", "Offer", 
+                new {userId = Model.Offer.UserId})"> WIĘCEJ OFERT SPRZEDAJĄCEGO </a>
+            </div>
+        </div>
+    </div>
 
-<div class="card bg-light mb-3" style="max-width: 20rem;">
-  <h4 class="card-header">Kontakt ze Sprzedającym: </h4>
-  <h4 class="card-header text-info text-center fst-italic">@Model.User.UserName</h4>
-  <div class="card-body">
-    <h5 class="card-title d-inline-block"><i class="fa-solid fa-envelope fa-xl text-danger"></i></h5>
-    <a href="mailto:@Model.User.Email" class="card-link d-inline-block ms-2">@Model.User.Email </a>
-  </div>
-    <div class="card-body ">
-    <h5 class="card-title d-inline-block"><i class="fa-solid fa-phone fa-xl text-danger"></i></h5>
-    <h6 class="d-inline-block ms-2">@Model.User.PhoneNumber </h6>
-  </div>
-  <div class="card-footer text-center ">
-    <a class="card-link link-primary " href="@Url.Action("Offers", "Offer", 
-    new {userId = Model.Offer.UserId})"> WIĘCEJ OFERT SPRZEDAJĄCEGO </a>
-  </div>
-</div>
-</div>
-
-
-       <div class="col col-md-6 col-sm-12">
-                    <div class="text-center mt-5">
-                        <a class="btn bg-warning btn-warning btn-lg " 
-                        asp-controller="Offer" asp-action="Offers">
-                            <i class="fa-solid fa-arrow-rotate-left me-2"></i>
-                            Cofnij
-                        </a>
-                    </div>
-                </div>
-
+    <div class="col col-md-6 col-sm-12">
+        <div class="text-center mt-5">
+            <a class="btn bg-warning btn-warning btn-lg " 
+                asp-controller="Offer" asp-action="Offers">
+                <i class="fa-solid fa-arrow-rotate-left me-2"></i>
+                 Cofnij
+            </a>
+        </div>
+    </div>
 </div>
 
 
 @section Scripts 
 {
     <script type="text/javascript">
-    
         function deleteOffer(id) {
             if (!confirm("Potwierdź usunięcie tego ogłoszenia ?"))
                 return;
@@ -241,8 +230,44 @@
                 
             });
         }
-
     </script>
+
+    <script type="text/javascript">       
+        function test(offerId){
+            if ($("#chk-isObserved").is(":checked")) {
+                $.ajax({
+                    type: 'POST',
+                    url: "@Url.Action("AddObservedOffer", "Offer")",
+                    dataType: "json",
+                    data: {
+                       offerId : offerId
+                    },
+                    success: function (data) {
+                       alert(data.message);
+                    },
+                    error: function (data) {
+                       alert(data.message);
+                    }
+                });
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    url: "@Url.Action("RemoveObservedOffer", "Offer")",
+                    dataType: "json",
+                    data: {
+                    offerId : offerId
+                    },
+                    success: function (data) {
+                        alert(data.message);
+                    },
+                    error: function (data) {
+                        alert(data.message);
+                    }
+                });
+            }                   
+        };             
+    </script>
+
 } 
 
 

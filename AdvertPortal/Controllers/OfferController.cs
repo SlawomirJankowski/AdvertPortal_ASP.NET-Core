@@ -30,16 +30,16 @@ namespace AdvertPortal.Controllers
 
         [AllowAnonymous]
         //GET All Offers
-        public IActionResult Offers(string userId, bool observedOffers = false)
+        public IActionResult Offers(string userId, bool observedOffers)
         {
             IEnumerable<Offer> offers;
             if (observedOffers)
-                offers = _offersRepository.GetAllObservedOffers(userId);
+                offers = _offersRepository.GetAllObservedOffersByLoggedUser(userId);
             else
                 offers = string.IsNullOrEmpty(userId) ? _offersRepository.GetAll() : _offersRepository.GetAllWhereUserIsOwner(userId);
 
             var vm = new OffersViewModel
-            {
+            {   
                 Offers = offers,
                 Categories = _offersRepository.GetCategories(),
                 FilterOffers = new FilterOffers(),
@@ -48,6 +48,7 @@ namespace AdvertPortal.Controllers
 
             return View(vm);
         }
+
 
         //GET View offer PUBLIC
         [AllowAnonymous]

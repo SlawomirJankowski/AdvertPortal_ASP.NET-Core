@@ -80,7 +80,7 @@ namespace AdvertPortal.Persistence.Repositories
             _context.SaveChanges();
         }
 
-        public IEnumerable<Offer> GetAllObservedOffers(string loggedUserId)
+        public IEnumerable<Offer> GetAllObservedOffersByLoggedUser(string loggedUserId)
         {
             var observedOffersByLoggedUser = from offers in _context.Offers
                                              join observedOffer in _context.ObservedOffers

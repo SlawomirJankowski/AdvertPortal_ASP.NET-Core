@@ -47,22 +47,47 @@ input.chk-toggle {
 }
 
 input.chk-toggle:checked:after, input.chk-toggle:after {
-        visibility: visible;
-        font-family: FontAwesome;
-        font-size: 40px;
-        vertical-align: text-bottom;
-    }
+    visibility: visible;
+    font-family: FontAwesome;
+    font-size: 40px;
+    vertical-align: text-bottom;
+}
 
-    input.chk-toggle:checked:after {
-        content: '\f058';
-        color: #099a26;
-    }
+input.chk-toggle:checked:after {
+    content: '\f058';
+    color: #099a26;
+}
 
-    input.chk-toggle:after {
-        content: '\f057';
-        color: #808080;
-    }
+input.chk-toggle:after {
+    content: '\f057';
+    color: #808080;
+}
 
+/*CKEditor 5*/
+#editor {
+    background: var(--ck-sample-color-white);
+    box-shadow: 2px 2px 2px rgba(0,0,0,.1);
+    border: 1px solid #DFE4E6;
+    border-bottom-color: #cdd0d2;
+    border-right-color: #cdd0d2;
+}
+
+.ck.ck-editor {
+    box-shadow: 2px 2px 2px rgba(0,0,0,.1);
+}
+
+.ck-focused {
+    border-color: #eb6864 !important;
+}
+
+.ck.ck-content {
+    font-size: 1.3em;
+    line-height: 1.2em;
+    margin-bottom: 0.8em;
+    min-height: 300px;
+    max-height: 300px;
+    padding: 1.5em 2em;
+}
 
 
 /*

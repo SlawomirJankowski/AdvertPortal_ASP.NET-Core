@@ -12,13 +12,13 @@
 }
 
 <div class="row">
-    <div class="text-start col col-7 justify-content-between">
+    <div class="text-start col col-8 justify-content-between">
 
         <h2 class="text-warning ">OGŁOSZENIE nr: <span class="text-primary">@Model.Offer.Id</span></h2>  
     </div>  
         @if (Model.Offer.UserId == Model.LoggedUserId)
         {
-            <div class="col  col-4 offset-1">
+            <div class="col  col-3 offset-1">
                 <div class="btn-group-horizontal ">
                      <button type="button" class="btn btn-success me-3"
                       onclick='window.location.href="@Url.Action("OfferAddEdit", "Offer", new { id = Model.Offer.Id })"'>
@@ -34,7 +34,7 @@
         }
         else if (SignInManager.IsSignedIn(User))
         {
-            <div class="col col-4 offset-1 ">
+            <div class="col col-3 offset-1 ">
                  <span class="badge rounded-pill bg-light ">Obserwowane:  
                      <input id="chk-isObserved" type="checkbox" class="chk-toggle" checked="@Model.IsObserved"  onchange="test(@Model.Offer.Id)"></span>
             </div>
@@ -166,7 +166,9 @@
     <div class="card">
         <h5 class="card-header text-info">Dane szczegółowe:</h5>
         <div class="card-body">
-            <p id="description" class="card-text">@Model.Offer.Description </p>
+            <div id="description" class="card-text">
+                @Html.Raw(Model.Offer.Description) 
+            </div>
         </div>
     </div>
 </div>

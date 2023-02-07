@@ -27,7 +27,7 @@
                 <div class="col col-5">
                     <div class="form-group mt-2">
                         @Html.LabelFor(x => x.Offer.Title, new { @class = "control-label col-form-label-lg" })
-                        @Html.TextBoxFor(x => x.Offer.Title, new { @class = "form-control", autocomplete = "off", type = "text" })                       
+                        @Html.TextBoxFor(x => x.Offer.Title, new { @class = "form-control", autocomplete = "off", type = "text", autofocus="true" })                       
                         @Html.ValidationMessageFor(x => x.Offer.Title)
                     </div>
 
@@ -43,7 +43,7 @@
                     <div class="form-group mt-2">
                         @Html.LabelFor(x => x.Offer.Price, new { @class = "control-label col-form-label-lg" })
                         @Html.TextBoxFor(x => x.Offer.Price,
-                   new { @class = "form-control", autocomplete = "off", type = "text", step="0.01", placeholder="np. 123,45" })
+                   new { @class = "form-control", autocomplete = "off", type = "text" })
                         @Html.ValidationMessageFor(x => x.Offer.Price)
                     </div>
 
@@ -71,7 +71,7 @@
                 <div class="form-group mb-2 mt-4 ">
                     @Html.LabelFor(x => x.Offer.Description, new { @class = "control-label col-form-label-lg" })
                     <div class="">
-                        @Html.TextAreaFor(x => x.Offer.Description, new { @class = "form-control", id = "", rows="5" })
+                        @Html.TextAreaFor(x => x.Offer.Description, new { @class = "form-control", id = "editor", rows="5" })
                         @Html.ValidationMessageFor(x => x.Offer.Description)
                     </div>
                 </div>
@@ -94,3 +94,18 @@
 </div>
 
 </div>
+
+@section Scripts {
+
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'))
+            .then(editor => {
+                editor.getData();
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+    </script>
+}

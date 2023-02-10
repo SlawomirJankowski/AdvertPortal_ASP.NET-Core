@@ -1,14 +1,12 @@
 ﻿using AdvertPortal.Core.Models;
 using AdvertPortal.Core.Models.Domains;
+using AdvertPortal.Core.Services;
 using AdvertPortal.Core.ViewModels;
-using AdvertPortal.Persistence;
 using AdvertPortal.Persistence.Extensions;
-using AdvertPortal.Persistence.Repositories;
+using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Ganss.Xss;
 using System.Net;
-
 
 namespace AdvertPortal.Controllers
 {
@@ -16,16 +14,16 @@ namespace AdvertPortal.Controllers
     public class OfferController : Controller
     {
 
-        private OffersRepository _offersRepository;
-        private UsersRepository _usersRepository;
-        private ObservedOffersRepository _observedOffersRepository;
+        private IOfferService _offerService;
+        private IUserService _userService;
+        private IObservedOfferService _observedOfferService;
         private readonly IWebHostEnvironment _env;
 
-        public OfferController(ApplicationDbContext context, IWebHostEnvironment env)
+        public OfferController(IOfferService offerService, IUserService userService, IObservedOfferService observedOfferService, IWebHostEnvironment env)
         {
-            _offersRepository = new OffersRepository(context);
-            _usersRepository = new UsersRepository(context);
-            _observedOffersRepository = new ObservedOffersRepository(context);
+            _offerService = offerService;
+            _userService = userService;
+            _observedOfferService = observedOfferService;
             _env = env;
         }
 
@@ -35,16 +33,16 @@ namespace AdvertPortal.Controllers
         {
             IEnumerable<Offer> offers;
             if (observedOffers)
-                offers = _offersRepository.GetAllObservedOffersByLoggedUser(userId);
+                offers = _offerService.GetAllObservedOffersByLoggedUser(userId);
             else
-                offers = string.IsNullOrEmpty(userId) ? _offersRepository.GetAll() : _offersRepository.GetAllWhereUserIsOwner(userId);
+                offers = string.IsNullOrEmpty(userId) ? _offerService.GetAll() : _offerService.GetAllWhereUserIsOwner(userId);
 
             var vm = new OffersViewModel
             {   
                 Offers = offers,
-                Categories = _offersRepository.GetCategories(),
+                Categories = _offerService.GetCategories(),
                 FilterOffers = new FilterOffers(),
-                UserName = !string.IsNullOrEmpty(userId) ? _usersRepository.GetUserById(userId) : null,
+                UserName = !string.IsNullOrEmpty(userId) ? _userService.GetUserById(userId) : null,
             };
 
             return View(vm);
@@ -55,7 +53,7 @@ namespace AdvertPortal.Controllers
         [AllowAnonymous]
         public IActionResult Offers(OffersViewModel offersViewModel)
         {
-            var offers = _offersRepository.GetFilteredOffers(offersViewModel.FilterOffers.CategoryId,
+            var offers = _offerService.GetFilteredOffers(offersViewModel.FilterOffers.CategoryId,
                 offersViewModel.FilterOffers.Title,
                 offersViewModel.FilterOffers.SortingOrderParams);
 
@@ -69,11 +67,11 @@ namespace AdvertPortal.Controllers
             var loggedUserId = User.GetLoggedUserId();
             var vm = new OfferDetailsViewModel
             {
-                Category = _offersRepository.GetCategoryById(categoryId),
-                Offer = _offersRepository.GetOffer(id),
-                User = _usersRepository.GetUserById(userId),
+                Category = _offerService.GetCategoryById(categoryId),
+                Offer = _offerService.GetOffer(id),
+                User = _userService.GetUserById(userId),
                 LoggedUserId = loggedUserId,
-                IsObserved = _observedOffersRepository.IsObserved(id, loggedUserId),
+                IsObserved = _observedOfferService.IsObserved(id, loggedUserId),
             };
 
             return View(vm);
@@ -83,7 +81,7 @@ namespace AdvertPortal.Controllers
         public IActionResult OfferAddEdit(int id = 0)
         {
             var userId = User.GetLoggedUserId();
-            var offer = id == 0 ? new Offer { Id = 0, UserId = userId } : _offersRepository.GetOfferForEdit(id, userId);
+            var offer = id == 0 ? new Offer { Id = 0, UserId = userId } : _offerService.GetOfferForEdit(id, userId);
 
             var vm = PrepareOfferViewModel(id, offer);
 
@@ -127,9 +125,9 @@ namespace AdvertPortal.Controllers
             }
           
             if (offer.Id == 0)
-                _offersRepository.Add(offer);
+                _offerService.Add(offer);
             else
-                _offersRepository.Update(offer);
+                _offerService.Update(offer);
 
             return RedirectToAction("Offers");
         }
@@ -146,7 +144,7 @@ namespace AdvertPortal.Controllers
             var vm = new OfferViewModel
             {
                 Offer = offer,
-                Categories = _offersRepository.GetCategories(),
+                Categories = _offerService.GetCategories(),
                 Heading = id == 0 ? "Dodawanie nowego ogłoszenia" : $"Edycja ogłoszenia nr: {offer.Id}"
             };
             return vm;
@@ -160,8 +158,8 @@ namespace AdvertPortal.Controllers
                 var userId = User.GetLoggedUserId();
                 var wwwRootPath = _env.WebRootPath;
 
-                _observedOffersRepository.DeleteAllObserved(id);
-                _offersRepository.Delete(id, userId, wwwRootPath);
+                _observedOfferService.DeleteAllObserved(id);
+                _offerService.Delete(id, userId, wwwRootPath);
             }
             catch (Exception ex)
             {
@@ -179,7 +177,7 @@ namespace AdvertPortal.Controllers
             try
             {
                 var userId = User.GetLoggedUserId();
-                _observedOffersRepository.AddObservedStatus(offerId, userId);
+                _observedOfferService.AddObservedStatus(offerId, userId);
             }
             catch (Exception ex)
             {
@@ -199,7 +197,7 @@ namespace AdvertPortal.Controllers
             try
             {
                 var userId = User.GetLoggedUserId();
-                _observedOffersRepository.RemoveObservedStatus(offerId, userId);
+                _observedOfferService.RemoveObservedStatus(offerId, userId);
             }
             catch (Exception ex)
             {

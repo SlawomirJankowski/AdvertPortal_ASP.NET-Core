@@ -1,12 +1,21 @@
+using AdvertPortal.Core;
 using AdvertPortal.Core.Models.Domains;
+using AdvertPortal.Core.Services;
 using AdvertPortal.Persistence;
-using Microsoft.AspNetCore.Identity;
+using AdvertPortal.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+builder.Services.AddScoped<IOfferService, OfferService>();
+builder.Services.AddScoped<IObservedOfferService, ObservedOfferService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();

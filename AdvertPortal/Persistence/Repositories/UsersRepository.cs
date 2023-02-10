@@ -1,11 +1,13 @@
-﻿using AdvertPortal.Core.Models.Domains;
+﻿using AdvertPortal.Core;
+using AdvertPortal.Core.Models.Domains;
+using AdvertPortal.Core.Repositories;
 
 namespace AdvertPortal.Persistence.Repositories
 {
-    public class UsersRepository
+    public class UsersRepository : IUsersRepository
     {
-        private ApplicationDbContext _context;
-        public UsersRepository(ApplicationDbContext context)
+        private IApplicationDbContext _context;
+        public UsersRepository(IApplicationDbContext context)
         {
             _context = context;
         }

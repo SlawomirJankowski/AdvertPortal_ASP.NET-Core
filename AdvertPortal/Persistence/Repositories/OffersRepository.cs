@@ -1,13 +1,15 @@
-﻿using AdvertPortal.Core.Models.Domains;
+﻿using AdvertPortal.Core;
+using AdvertPortal.Core.Models.Domains;
+using AdvertPortal.Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace AdvertPortal.Persistence.Repositories
 {
-    public class OffersRepository
+    public class OffersRepository : IOffersRepository
     {
 
-        private ApplicationDbContext _context;  
-        public OffersRepository(ApplicationDbContext context)
+        private IApplicationDbContext _context;  
+        public OffersRepository(IApplicationDbContext context)
         {
             _context = context;
         }
@@ -78,8 +80,7 @@ namespace AdvertPortal.Persistence.Repositories
 
         public void Add(Offer offer)
         {
-            _context.Add(offer);
-            _context.SaveChanges();
+            _context.Offers.Add(offer);
         }
 
         public void Delete(int id, string userId, string wwwRootPath)
@@ -95,7 +96,6 @@ namespace AdvertPortal.Persistence.Repositories
             }
 
             _context.Offers.Remove(offerToDelete);
-            _context.SaveChanges();
         }
 
         public void Update(Offer offer)
@@ -110,8 +110,6 @@ namespace AdvertPortal.Persistence.Repositories
             offerToUpdate.ImagesPath = offer.ImagesPath;
             offerToUpdate.ThumbnailName = offer.ThumbnailName;
             offerToUpdate.ImagesNames = offer.ImagesNames;
-
-            _context.SaveChanges();
         }
 
         public IEnumerable<Offer> GetAllObservedOffersByLoggedUser(string loggedUserId)

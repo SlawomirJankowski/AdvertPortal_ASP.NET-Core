@@ -30,6 +30,17 @@ namespace AdvertPortal.Persistence.Repositories
             return _context.ObservedOffers.Any(x => x.OfferId == offerId && x.UserId == userId);
         }
 
-
+        public void DeleteAllObserved(int id)
+        {
+            var observedOffersToDelete = _context.ObservedOffers.Where(x => x.OfferId == id).ToList();
+            if(observedOffersToDelete.Any() )
+            {
+                foreach (var observedOffer in observedOffersToDelete)
+                    {
+                        _context.ObservedOffers.Remove(observedOffer);
+                    }
+                _context.SaveChanges();
+            }
+        }
     }
 }

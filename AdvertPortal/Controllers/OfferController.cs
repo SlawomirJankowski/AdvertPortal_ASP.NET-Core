@@ -7,23 +7,26 @@ using AdvertPortal.Persistence.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ganss.Xss;
-using System.Net.Mail;
 using System.Net;
+
 
 namespace AdvertPortal.Controllers
 {
     [Authorize]
     public class OfferController : Controller
     {
+
         private OffersRepository _offersRepository;
         private UsersRepository _usersRepository;
         private ObservedOffersRepository _observedOffersRepository;
+        private readonly IWebHostEnvironment _env;
 
-        public OfferController(ApplicationDbContext context)
+        public OfferController(ApplicationDbContext context, IWebHostEnvironment env)
         {
             _offersRepository = new OffersRepository(context);
             _usersRepository = new UsersRepository(context);
             _observedOffersRepository = new ObservedOffersRepository(context);
+            _env = env;
         }
 
         [AllowAnonymous]
@@ -41,7 +44,7 @@ namespace AdvertPortal.Controllers
                 Offers = offers,
                 Categories = _offersRepository.GetCategories(),
                 FilterOffers = new FilterOffers(),
-                UserName = !string.IsNullOrEmpty(userId) ? _usersRepository.GetUserById(userId) : null
+                UserName = !string.IsNullOrEmpty(userId) ? _usersRepository.GetUserById(userId) : null,
             };
 
             return View(vm);
@@ -49,6 +52,7 @@ namespace AdvertPortal.Controllers
 
         //POST filter Offers
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult Offers(OffersViewModel offersViewModel)
         {
             var offers = _offersRepository.GetFilteredOffers(offersViewModel.FilterOffers.CategoryId,
@@ -69,7 +73,7 @@ namespace AdvertPortal.Controllers
                 Offer = _offersRepository.GetOffer(id),
                 User = _usersRepository.GetUserById(userId),
                 LoggedUserId = loggedUserId,
-                IsObserved = _observedOffersRepository.IsObserved(id, loggedUserId)
+                IsObserved = _observedOffersRepository.IsObserved(id, loggedUserId),
             };
 
             return View(vm);
@@ -89,7 +93,7 @@ namespace AdvertPortal.Controllers
         //POST Edit, Add
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult OfferAddEdit(Offer offer)
+        public IActionResult OfferAddEdit(Offer offer, ImagesUploader imagesUploader)
         {
             var userId = User.GetLoggedUserId();
             offer.UserId = userId;
@@ -106,6 +110,22 @@ namespace AdvertPortal.Controllers
                 return View("OfferAddEdit", vm);
             }
 
+            //upload images
+            if (imagesUploader.PostedThumbnail != null || imagesUploader.PostedImages != null)
+            {   if(offer.Id == 0)
+                    offer.ImagesPath = imagesUploader.ImagesDirectoryPath;
+                
+                string path = Path.Combine(this._env.WebRootPath, "Uploads", offer.ImagesPath);
+
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                if (imagesUploader.PostedThumbnail != null)
+                    offer.ThumbnailName = imagesUploader.GetNameAndUploadImageToServer(path, imagesUploader.PostedThumbnail);
+                if (imagesUploader.PostedImages != null)
+                    offer.ImagesNames = imagesUploader.GetListOfImagesFileNamesAsStringAndUpload(path, imagesUploader.PostedImages);
+            }
+          
             if (offer.Id == 0)
                 _offersRepository.Add(offer);
             else
@@ -133,12 +153,15 @@ namespace AdvertPortal.Controllers
         }
 
         [HttpPost]
-        public IActionResult Delete(int id) //Offer offer
+        public IActionResult Delete(int id) 
         {
             try
             {
                 var userId = User.GetLoggedUserId();
-                _offersRepository.Delete(id, userId);
+                var wwwRootPath = _env.WebRootPath;
+
+                _observedOffersRepository.DeleteAllObserved(id);
+                _offersRepository.Delete(id, userId, wwwRootPath);
             }
             catch (Exception ex)
             {

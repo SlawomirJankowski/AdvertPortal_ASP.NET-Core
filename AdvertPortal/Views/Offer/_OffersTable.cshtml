@@ -16,30 +16,29 @@
           </thead>
           <tbody class="justify-content-center">
                 @if (Model != null && Model.Any())
-                {
+                {                                       
                     foreach (var offer in Model)
-                    {
-
+                    {   
                         <tr>
                             <td>
-                                @if (offer.ImagesCollectionId != 0 || offer.ImagesCollectionId == null)
+                                @if (!string.IsNullOrWhiteSpace(offer.ThumbnailName))
                                 {
-                                   <img src="offer.ImagesCollection.Path" width="150", height="100" alt="offer photo from db"/>
+                                    <img src="~/Uploads/@offer.ImagesPath/@offer.ThumbnailName" width="150", height="100" alt="thumbnail"/>
                                 }      
                                 else
                                 {
-                                   <img src="~/shadow_man-612x612.jpg" width="150", height="100" alt="offer photo"    />
+                                   <img src="~/no-image.png" width="100", height="100" alt="no image"/>
                                 }
                                 </td> 
                             <td class="text-info"> <em>@offer.Date.ToString("yyyy-MM-dd HH:mm")</em> </td>
                             <td> 
                                 <a href="@Url.Action("OfferDetails", "Offer", 
                                     new {id = offer.Id, userId = offer.UserId, categoryId = offer.CategoryId})" 
-                                    class="fw-bold text-capitalize">
+                                    class="fw-bold text-capitalize text-danger">
                                     @offer.Title.ToUpper()
                                 </a>     
                             </td>
-                                    <td class="text-end"> @offer.Price.ToString("C", CultureInfo.CurrentCulture)</td>
+                            <td class="text-end"> @offer.Price.ToString("C", CultureInfo.CurrentCulture)</td>
                         </tr>
                     }
                 }

@@ -1,4 +1,5 @@
 ﻿using AdvertPortal.Core.Models.Domains;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AdvertPortal.Core.ViewModels
 {
@@ -9,5 +10,6 @@ namespace AdvertPortal.Core.ViewModels
         public ApplicationUser User { get; set; }
         public string LoggedUserId { get; set; }
         public bool IsObserved { get; set; }
+
     }
 }

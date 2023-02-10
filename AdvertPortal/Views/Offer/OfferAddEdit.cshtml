@@ -8,7 +8,7 @@
     <h2 class="text-warning text-start">@Model.Heading</h2> 
 <hr />
 
-<div class="row">
+    <div class="row">
 
         @using (Html.BeginForm("OfferAddEdit", "Offer", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
@@ -17,6 +17,7 @@
             @Html.HiddenFor(x => x.Offer.Id)
             @Html.HiddenFor(x => x.Offer.UserId)
             @Html.HiddenFor(x => x.Offer.Date)
+            @Html.HiddenFor(x => x.Offer.ImagesPath)
 
             <div class="row">
                 @if (Model.Offer.Id == 0)
@@ -42,30 +43,24 @@
 
                     <div class="form-group mt-2">
                         @Html.LabelFor(x => x.Offer.Price, new { @class = "control-label col-form-label-lg" })
-                        @Html.TextBoxFor(x => x.Offer.Price,
-                   new { @class = "form-control", autocomplete = "off", type = "text" })
+                        @Html.TextBoxFor(x => x.Offer.Price, new { @class = "form-control", autocomplete = "off", type = "text" })
                         @Html.ValidationMessageFor(x => x.Offer.Price)
                     </div>
-
                 </div>
 
                 <div class="col col-5 offset-2 mt-2">
-                        <div class="form-group mt-2">
-                        @Html.LabelFor(x => x.Offer.ImagesCollectionId, new { @class = "control-label col-form-label-lg" })
-                        @Html.TextBoxFor(x => x.Offer.ImagesCollection,
-                    new { @class = "form-control btn-info", type = "file", name = "postedFiles" })
-
-                        </div>
-
-                        <div class="form-group mt-2">
-                        @Html.LabelFor(x => x.Offer.ImagesCollectionId, new { @class = "control-label col-form-label-lg" })
-                        @Html.TextBoxFor(x => x.Offer.ImagesCollection,
-                        new { @class = "form-control btn-info", type = "file", multiple = "multiple", name = "postedFiles" })
-
-                        </div>
+                    <div class="form-group mt-2">
+                        @Html.LabelFor(x => x.ImagesUploader.PostedThumbnail, new { @class = "control-label col-form-label-lg" })
+                        @Html.TextBoxFor(x => x.ImagesUploader.PostedThumbnail, new { @class = "form-control btn-info", type = "file", name = "postedThumbnail", accept="image/*" })
                     </div>
 
+                    <div class="form-group mt-2">
+                        @Html.LabelFor(x => x.ImagesUploader.PostedImages, new { @class = "control-label col-form-label-lg" })
+                        @Html.TextBoxFor(x => x.ImagesUploader.PostedImages, new { @class = "form-control btn-info", type = "file", multiple = "multiple", name = "postedImages", accept="image/*" })
+                    </div>
+                </div>
             </div>
+
             <div class="col col-12">
 
                 <div class="form-group mb-2 mt-4 ">
@@ -82,17 +77,15 @@
                         ZAPISZ I PUBLIKUJ
                     </button>
                             
-                            <a class="btn bg-warning btn-warning btn-lg " 
+                    <a class="btn bg-warning btn-warning btn-lg " 
                         asp-controller="Offer" asp-action="Offers">
-                                <i class="fa-solid fa-arrow-rotate-left me-2"></i>
-                                Cofnij
-                            </a>
-                        </div>
+                        <i class="fa-solid fa-arrow-rotate-left me-2"></i>
+                        Cofnij
+                    </a>
                 </div>
-
+            </div>
         }
-</div>
-
+    </div>
 </div>
 
 @section Scripts {

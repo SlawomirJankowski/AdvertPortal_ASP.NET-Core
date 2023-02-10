@@ -18,9 +18,12 @@ namespace AdvertPortal.Controllers
             _logger = logger;
         }
 
-        
-
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult About()
         {
             return View();
         }

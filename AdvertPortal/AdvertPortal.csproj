@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\shadow_man-612x612.jpg" />
+    <Folder Include="wwwroot\Uploads\" />
   </ItemGroup>
 
 </Project>

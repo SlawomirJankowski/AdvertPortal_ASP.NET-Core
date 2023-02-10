@@ -1,6 +1,7 @@
 ﻿using AdvertPortal.Core.Models;
 using AdvertPortal.Core.Models.Domains;
 
+
 namespace AdvertPortal.Core.ViewModels
 {
     public class OffersViewModel
@@ -9,5 +10,6 @@ namespace AdvertPortal.Core.ViewModels
         public IEnumerable<Offer> Offers { get; set; }
         public IEnumerable<Category> Categories { get; set; }
         public ApplicationUser? UserName { get; set; }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace AdvertPortal.Core.Models.Domains
 {
@@ -25,8 +26,6 @@ namespace AdvertPortal.Core.Models.Domains
         [RegularExpression(@"^\$?\d+(\,(\d{2}))?$")]
         public decimal Price { get; set; }
 
-        public int? ImagesCollectionId { get; set; }
-
         [Required(ErrorMessage = "Pole KATEGORIA jest wymagane")]
         [Display(Name = "Kategoria:")]
         public int CategoryId { get; set; }
@@ -34,9 +33,14 @@ namespace AdvertPortal.Core.Models.Domains
         [Required]
         public string UserId { get; set; }
 
+        public string? ImagesPath { get; set; }
+
+        public string? ThumbnailName { get; set; }
+
+        public string? ImagesNames { get; set; }
+
 
         public Category? Category { get; set; }
-        public ImagesCollection? ImagesCollection { get; set; }
         public ApplicationUser? User { get; set; }
     }
 }

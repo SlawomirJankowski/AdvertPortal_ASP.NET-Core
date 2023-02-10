@@ -1,7 +1,5 @@
 ﻿using AdvertPortal.Core.Models.Domains;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace AdvertPortal.Persistence.Repositories
 {
@@ -56,7 +54,7 @@ namespace AdvertPortal.Persistence.Repositories
             return offers.ToList();
         }
 
-public IEnumerable<Category> GetCategories()
+        public IEnumerable<Category> GetCategories()
         {
             return _context.Categories.ToList();
         }
@@ -84,10 +82,18 @@ public IEnumerable<Category> GetCategories()
             _context.SaveChanges();
         }
 
-        public void Delete(int id, string userId)
+        public void Delete(int id, string userId, string wwwRootPath)
         {
             var offerToDelete = _context.Offers
                     .Single(x => x.Id == id && x.UserId == userId);
+
+            //Delete image files if exist
+            if (!string.IsNullOrWhiteSpace(offerToDelete.ImagesPath))
+            {
+                var path = Path.Combine(wwwRootPath, "Uploads", offerToDelete.ImagesPath);
+                Directory.Delete(path, true);
+            }
+
             _context.Offers.Remove(offerToDelete);
             _context.SaveChanges();
         }
@@ -101,7 +107,9 @@ public IEnumerable<Category> GetCategories()
             offerToUpdate.Description = offer.Description;
             offerToUpdate.CategoryId = offer.CategoryId;
             offerToUpdate.Price = offer.Price;
-            // add update for imagesCollection
+            offerToUpdate.ImagesPath = offer.ImagesPath;
+            offerToUpdate.ThumbnailName = offer.ThumbnailName;
+            offerToUpdate.ImagesNames = offer.ImagesNames;
 
             _context.SaveChanges();
         }
@@ -114,7 +122,7 @@ public IEnumerable<Category> GetCategories()
                                              where observedOffer.UserId == loggedUserId
                                              select offers;
 
-             return observedOffersByLoggedUser;
+            return observedOffersByLoggedUser;
         }
     }
 }

@@ -13,7 +13,6 @@ namespace AdvertPortal.Persistence
 
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<ImagesCollection> ImagesCollections { get; set; }
         public DbSet<ObservedOffer> ObservedOffers { get; set;}
 
     }

@@ -6,19 +6,19 @@
     <title>@ViewData["Title"] - AdvertPortal</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-   
+    <link runat="server" rel="icon" href="~/favicon.ico" type="image/ico" />
     <script src="~/js/fontawesome/fa-icons-kit.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/ckeditor/ckeditor.js"></script>
 
-    @*<link rel="stylesheet" href="~/AdvertPortal.styles.css" asp-append-version="true" />*@
+
 </head>
 <body>
     <header>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <div class="container">
-    <a class="navbar-brand" asp-area="" asp-controller="Offer" asp-action="Offers">
+    <a class="navbar-brand" asp-controller="Offer" asp-action="Offers">
         <i class="fa-brands fa-sellcast fa-2xl me-2"></i>
         ADVERT Portal
     </a>
@@ -28,15 +28,15 @@
     <div class="collapse navbar-collapse" id="navbarColor01">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link active" asp-area="" asp-controller="Offer" asp-action="Offers">OGŁOSZENIA
+          <a class="nav-link active" asp-controller="Offer" asp-action="Offers">OGŁOSZENIA
             <span class="visually-hidden">(current)</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">POLITYKA PRYWATNOŚCI</a>
+          <a class="nav-link" asp-controller="Home" asp-action="Privacy">POLITYKA PRYWATNOŚCI</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">O APLIKACJI</a>
+          <a class="nav-link" asp-controller="Home" asp-action="About">INFORMACJE</a>
         </li>
       </ul>
       <partial name="_LoginPartial" />

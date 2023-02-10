@@ -103,25 +103,6 @@ namespace AdvertPortal.Data.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("AdvertPortal.Core.Models.Domains.ImagesCollection", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ImageNames")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Path")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ImagesCollections");
-                });
-
             modelBuilder.Entity("AdvertPortal.Core.Models.Domains.ObservedOffer", b =>
                 {
                     b.Property<int>("Id")
@@ -161,11 +142,17 @@ namespace AdvertPortal.Data.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<int?>("ImagesCollectionId")
-                        .HasColumnType("int");
+                    b.Property<string>("ImagesNames")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagesPath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ThumbnailName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -179,8 +166,6 @@ namespace AdvertPortal.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("ImagesCollectionId");
 
                     b.HasIndex("UserId");
 
@@ -332,10 +317,6 @@ namespace AdvertPortal.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AdvertPortal.Core.Models.Domains.ImagesCollection", "ImagesCollection")
-                        .WithMany()
-                        .HasForeignKey("ImagesCollectionId");
-
                     b.HasOne("AdvertPortal.Core.Models.Domains.ApplicationUser", "User")
                         .WithMany("Offers")
                         .HasForeignKey("UserId")
@@ -343,8 +324,6 @@ namespace AdvertPortal.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-
-                    b.Navigation("ImagesCollection");
 
                     b.Navigation("User");
                 });

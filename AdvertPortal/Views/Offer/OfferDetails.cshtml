@@ -1,8 +1,10 @@
 ﻿@using System.Globalization;
 @using System.Security.Claims;
 @using AdvertPortal.Core.Models.Domains;
+@using AdvertPortal.Persistence.Extensions;
 @using Microsoft.AspNetCore.Antiforgery;
 @using Microsoft.AspNetCore.Identity;
+@using System.IO;
 @model AdvertPortal.Core.ViewModels.OfferDetailsViewModel
 @inject IAntiforgery antiforgery
 @inject SignInManager<ApplicationUser> SignInManager
@@ -18,7 +20,7 @@
     </div>  
         @if (Model.Offer.UserId == Model.LoggedUserId)
         {
-            <div class="col  col-3 offset-1">
+            <div class="col  col-3  offset-1">
                 <div class="btn-group-horizontal ">
                      <button type="button" class="btn btn-success me-3"
                       onclick='window.location.href="@Url.Action("OfferAddEdit", "Offer", new { id = Model.Offer.Id })"'>
@@ -34,9 +36,10 @@
         }
         else if (SignInManager.IsSignedIn(User))
         {
-            <div class="col col-3 offset-1 ">
+            <div class="col col-3  offset-1 ">
                  <span class="badge rounded-pill bg-light ">Obserwowane:  
-                     <input id="chk-isObserved" type="checkbox" class="chk-toggle" checked="@Model.IsObserved"  onchange="test(@Model.Offer.Id)"></span>
+                     <input id="chk-isObserved" type="checkbox" class="chk-toggle" checked="@Model.IsObserved"  onchange="test(@Model.Offer.Id)">
+                 </span>
             </div>
         }
 </div>
@@ -53,33 +56,37 @@
 <hr />
 
 <div class="row">
-    <div class="col col-6 ">
+    <div class="col col-md-6  col-xs-12 ">
         <h3 class="mt-4 text-danger fw-bold">@Model.Offer.Title.ToUpper()</h3> 
 
         <label class="form-label text-info mt-4 text-" >Data publikacji:</label>
         <h5>@Model.Offer.Date.ToString("yyyy-MM-dd HH:mm")</h5> 
 
-        <label class="form-label text-info mt-4" >Kategoria:</label>
+        <label class="form-label text-info mt-4" >Kategoria: </label>
         <h5>@Model.Offer.Category.Name</h5> 
 
         <label class="form-label text-info mt-4" >Cena:</label>
         <h3>@Model.Offer.Price.ToString("C", CultureInfo.CurrentCulture)</h3>
     </div> 
 
-    <div class="col col-6  mt-4 mb-4">
+    <div class="col col-md-6 col-xs-12 mt-4 mb-4">
         @*    <label class="form-label text-info mt-4" >Images:</label>*@
+        @if (!string.IsNullOrWhiteSpace(Model.Offer.ImagesNames))
+        {
+            var listOfImages = Model.Offer.GetImagesFilesList();
 
-        <div id="carousel" class="carousel slide">
-              <div class="carousel-inner container-fluid">
-                    <div class="carousel-item container-fluid active">
-                      <img src="~/shadow_man-612x612.jpg" class="d-block w-100" alt=".111..">
-                    </div>
-                    <div class="carousel-item container-fluid">
-                      <img src="~/Projekt_KS.png" class="d-block w-100" alt=".222..">
-                    </div>
-                    <div class="carousel-item container-fluid">
-                      <img src="~/shadow_man-612x612.jpg" class="d-block w-100" alt=".333..">
-                    </div>
+            <div id="carousel" class="carousel slide">
+                <div class="carousel-inner container-fluid">
+                    
+                    @foreach (var image in listOfImages)
+                    {
+                       <div class="carousel-item container-fluid @(image == listOfImages.FirstOrDefault() ? "active" : "")">
+                            <img src="~/Uploads/@Model.Offer.ImagesPath/@image" 
+                                class="d-block w-100" alt="offer image">
+                       </div> 
+
+                    }                 
+
               </div>
                   <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" ></span>
@@ -89,78 +96,16 @@
                     <span class="carousel-control-next-icon" ></span>
                     <span class="visually-hidden">Next</span>
                   </button>
-        </div>
+            </div>
+        }
+        else
+        {
+            <div class="text-center">
+                <img src="~/no-image.png" width="300" height="300" alt="No images available" />
+            </div>
+        }
     </div>
 </div>
-<!---->
-@*
-<div class="container">
-<h1>Photo/Gallery</h1>
-<hr>
-    <div class="row">
-        <div class="col-lg-4 col-sm-6">
-            <div class="thumbnail img-responsive">
-                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1494719019271-7bfff81660d2?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=74496a215491b1529d6702f146901970&auto=format&fit=crop&w=500&q=60"> </a>
-            </div>
-        </div>
-        <div class="col-lg-4 col-sm-6">
-            <div class="thumbnail img-responsive">
-                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1523357585206-175e971f2ad9?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=4d4e050da1c691f01f0643abe9cd5f94&auto=format&fit=crop&w=500&q=60"></a>
-            </div>
-        </div>
-        <div class="col-lg-4 col-sm-6 ">
-            <div class="thumbnail">
-                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1523359366921-4c14294ff5bd?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6010b5b8bc1f6916d652fb48b9e039a6&auto=format&fit=crop&w=500&q=60"></a>
-            </div>
-        </div>
-        <div class="col-lg-4 col-sm-6">
-            <div class="thumbnail img-responsive">
-                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1523282310917-57c94215f54f?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=9562049492c4c1c28014be6b4d372fa8&auto=format&fit=crop&w=500&q=60"></a>
-            </div>
-        </div>
-        <div class="col-lg-4 col-sm-6">
-            <div class="thumbnail img-responsive">
-                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1523279719030-9806e8392152?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=83ec2854d04d0f08312dec44bf645e2d&auto=format&fit=crop&w=500&q=60"></a>
-            </div>
-        </div>
-        <div class="col-lg-4 col-sm-6">
-            <div class="thumbnail img-responsive">
-                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1523264629844-40dd6bf17c2b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=c7ff0286ae72f4dfed2bfee5fc8a53fe&auto=format&fit=crop&w=500&q=60"></a>
-            </div>
-        </div>
-        <div class="col-lg-4 col-sm-6">
-            <div class="thumbnail img-responsive">
-                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1523133892278-d324fa6b326b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=1ba6e3178a138e7dcbdd241499378449&auto=format&fit=crop&w=500&q=60"></a>
-            </div>
-        </div>
-        <div class="col-lg-4 col-sm-6">
-            <div class="thumbnail img-responsive">
-                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1523326350151-473dc3e5215b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=aa765415933dbcd55bc27e0726bfd1f5&auto=format&fit=crop&w=500&q=60"></a>
-            </div>
-        </div>
-        <div class="col-lg-4 col-sm-6">
-            <div class="thumbnail img-responsive">
-                <a href="#" title="Image 1"><img src="https://images.unsplash.com/photo-1523086686757-5cda47c78492?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=0da31c54dc3e5fd28da519b2cde2c98d&auto=format&fit=crop&w=500&q=60"></a>
-            </div>
-        </div>
-    </div>
-</div>
-<div id="modal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times"></i></button>
-            </div>
-            <div class="modal-body">
-            </div>
-        </div>
-    </div>
-</div>
-
-
-*@
-
-<!---->
 
 <div class="row mt-4">
     <div class="card">
@@ -192,7 +137,7 @@
             <a class="card-link link-primary " href="@Url.Action("Offers", "Offer", 
                 new {userId = Model.Offer.UserId})"> WIĘCEJ OFERT SPRZEDAJĄCEGO </a>
             </div>
-        </div>
+        </div> 
     </div>
 
     <div class="col col-md-6 col-sm-12">
@@ -270,19 +215,3 @@
 
 } 
 
-
-
-@*    $('.thumbnail').click(function(){
-        $('.modal-body').empty();
-        $($(this).parents('div').html()).appendTo('.modal-body');
-        $('#modal').modal({show:true});
-    });
-
-    $('#modal').on('show.bs.modal', function () {
-       $('.col-6,.row .thumbnail').addClass('blur');
-    })
-
-    $('#modal').on('hide.bs.modal', function () {
-       $('.col-6,.row .thumbnail').removeClass('blur');
-    })
-           *@
